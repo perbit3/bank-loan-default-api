@@ -16,6 +16,13 @@ Target: `DEFAULTER` (1 = defaulted, 0 = did not default). Predictors: every othe
 | `model.py` | Loads the data and trains the 500-tree Random Forest |
 | `train.py` | Trains the model, prints out-of-bag accuracy and feature importance, scores the test dataset and saves `test_predictions.csv` |
 | `main.py` | FastAPI app with the `/predict` endpoint |
+| `LoanDefaultApi.bas` | VBA module behind the Submit button in the Excel workbook (`bank_loan_default_prediction.xlsm`) |
+
+## Excel interface
+
+The macro-enabled workbook has a **Predict** sheet where the user enters a customer's details and clicks **Submit**. The macro posts the details as JSON to `/predict` and writes the probability of default, the predicted class and a risk label back to the sheet. A **Test Predictions** sheet scores every customer in the test dataset through the same endpoint.
+
+The macro works on both platforms: Excel for Mac calls `curl` through `popen` from `libc`, and Excel for Windows uses `WinHttp.WinHttpRequest`.
 
 ## Run locally
 
@@ -40,7 +47,7 @@ Open http://127.0.0.1:8000/docs for the interactive documentation.
 Example request:
 
 ```bash
-curl -X POST https://bank-loan-default-api.onrender.com/predict \
+curl -X POST https://bank-loan-default-api-9bms.onrender.com/predict \
   -H "Content-Type: application/json" \
   -d '{"AGE": 3, "EMPLOY": 16, "ADDRESS": 10, "DEBTINC": 9.1, "CREDDEBT": 11.3, "OTHDEBT": 5.01}'
 ```
@@ -53,4 +60,6 @@ Example response:
 
 ## Deployment
 
-Deployed on Render (free plan) using `render.yaml`. Python is pinned to 3.11.9 with `.python-version`.
+Deployed on Render (free plan, Frankfurt): https://bank-loan-default-api-9bms.onrender.com/docs
+
+Python is pinned to 3.11.9 with `.python-version`.
